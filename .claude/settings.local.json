@@ -13,7 +13,9 @@
       "Bash(kill 95090:*)",
       "Bash(npx prisma:*)",
       "Bash(./node_modules/.bin/prisma generate:*)",
-      "Bash(./node_modules/.bin/prisma db:*)"
+      "Bash(./node_modules/.bin/prisma db:*)",
+      "Bash(grep -E \"\\\\.\\(env|config|json|ts\\)$|^-\")",
+      "Bash(npm test:*)"
     ]
   }
 }
