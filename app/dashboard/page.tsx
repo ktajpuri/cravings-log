@@ -25,6 +25,7 @@ interface Stats {
   resistanceRate: string;
   averageIntensity: number;
   mostCommonTrigger: string | null;
+  mostCommonLocation: string | null;
   todayCount: number;
   currentStreak: number;
 }

@@ -8,6 +8,7 @@ const FULL_STATS = {
   resistanceRate: "80%",
   averageIntensity: 6.3,
   mostCommonTrigger: "stress",
+  mostCommonLocation: "home",
   todayCount: 3,
   currentStreak: 5,
 };
@@ -53,13 +54,24 @@ describe("StatsCard", () => {
 
     it("renders most common trigger section when set", () => {
       render(<StatsCard stats={FULL_STATS} />);
-      expect(screen.getByText("Most common trigger")).toBeInTheDocument();
+      expect(screen.getByText("Top trigger")).toBeInTheDocument();
       expect(screen.getByText("stress")).toBeInTheDocument();
+    });
+
+    it("renders most common location section when set", () => {
+      render(<StatsCard stats={FULL_STATS} />);
+      expect(screen.getByText("Top location")).toBeInTheDocument();
+      expect(screen.getByText("home")).toBeInTheDocument();
     });
 
     it("does not render trigger section when mostCommonTrigger is null", () => {
       render(<StatsCard stats={{ ...FULL_STATS, mostCommonTrigger: null }} />);
-      expect(screen.queryByText("Most common trigger")).not.toBeInTheDocument();
+      expect(screen.queryByText("Top trigger")).not.toBeInTheDocument();
+    });
+
+    it("does not render location section when mostCommonLocation is null", () => {
+      render(<StatsCard stats={{ ...FULL_STATS, mostCommonLocation: null }} />);
+      expect(screen.queryByText("Top location")).not.toBeInTheDocument();
     });
 
     it("renders 0 streak correctly", () => {
