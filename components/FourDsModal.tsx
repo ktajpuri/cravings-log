@@ -266,6 +266,7 @@ export default function FourDsModal({ open, onClose, cravingId, onMarkResisted }
         className="fixed bottom-0 left-0 right-0 z-50 max-h-[90vh] overflow-y-auto rounded-t-2xl bg-white transition-transform duration-300 ease-out"
         style={{
           transform: open ? "translateY(0)" : "translateY(100%)",
+          visibility: open ? "visible" : "hidden",
           boxShadow: "var(--md-shadow-4)",
         }}
       >

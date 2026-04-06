@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
 test.describe("Log a craving", () => {
   test("form is visible on dashboard", async ({ page }) => {
     await expect(page.getByText("Log a craving")).toBeVisible();
-    await expect(page.getByText("Intensity")).toBeVisible();
+    await expect(page.getByText("Intensity", { exact: true })).toBeVisible();
   });
 
   test("can select a trigger chip", async ({ page }) => {
@@ -60,6 +60,6 @@ test.describe("Log a craving", () => {
 
     await expect(page.getByRole("button", { name: /mark craving as resisted/i })).toBeVisible({ timeout: 5000 });
     await page.getByRole("button", { name: /mark craving as resisted/i }).click();
-    await expect(page.getByText("The 4Ds")).not.toBeVisible();
+    await expect(page.locator('[aria-label="4Ds craving relief"]')).not.toBeVisible();
   });
 });
