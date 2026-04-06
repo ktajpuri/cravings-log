@@ -4,7 +4,7 @@ import { Page } from "@playwright/test";
 // The form re-renders when trigger/location chips arrive, which detaches
 // DOM elements mid-click. Call this before any form interaction.
 export async function waitForFormReady(page: Page) {
-  await page.waitForSelector("button:has-text('stress')", { timeout: 10_000 });
+  await page.waitForSelector("[data-testid='trigger-chips-loaded']", { timeout: 10_000 });
 }
 
 // Creates a session directly in the DB and sets the cookie — bypasses the

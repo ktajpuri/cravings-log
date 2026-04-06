@@ -9,7 +9,7 @@ test.describe("Authentication", () => {
 
   test("login page renders sign-in options", async ({ page }) => {
     await page.goto("/login");
-    await expect(page.getByText(/sign in/i)).toBeVisible();
+    await expect(page.getByRole("button", { name: /continue with google/i })).toBeVisible();
   });
 
   test("signs in with test credentials and lands on dashboard", async ({ page }) => {

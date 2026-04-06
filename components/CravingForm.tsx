@@ -335,6 +335,7 @@ export default function CravingForm({ onSuccess }: CravingFormProps) {
       <IntensitySlider value={intensity} onChange={setIntensity} />
 
       {/* Trigger chips */}
+      {triggers.length > 0 && <span data-testid="trigger-chips-loaded" className="sr-only" aria-hidden="true" />}
       <ChipGroup
         label="Trigger"
         options={triggers}
