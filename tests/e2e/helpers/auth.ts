@@ -1,5 +1,12 @@
 import { Page } from "@playwright/test";
 
+// Waits for the CravingForm options to finish loading from the API.
+// The form re-renders when trigger/location chips arrive, which detaches
+// DOM elements mid-click. Call this before any form interaction.
+export async function waitForFormReady(page: Page) {
+  await page.waitForSelector("button:has-text('stress')", { timeout: 10_000 });
+}
+
 // Creates a session directly in the DB and sets the cookie — bypasses the
 // NextAuth signin UI entirely. Required because NextAuth v5 credentials
 // providers are incompatible with database session strategy.
