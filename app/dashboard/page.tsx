@@ -72,25 +72,35 @@ export default function DashboardPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-gray-400 animate-pulse text-lg">Loading...</div>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-lg animate-pulse">
+            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <span className="text-sm text-gray-400 font-medium">Loading your dashboard…</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50">
       <Navbar
         userName={session?.user?.name}
         userImage={session?.user?.image}
       />
 
-      <main className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+      <main className="max-w-2xl mx-auto px-4 py-8 space-y-8">
         {/* Stats */}
         <section>
-          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">
-            Your progress
-          </h2>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-1 h-5 bg-indigo-600 rounded-full" />
+            <h2 className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+              Your progress
+            </h2>
+          </div>
           <StatsCard stats={stats} />
         </section>
 
@@ -101,11 +111,14 @@ export default function DashboardPage() {
 
         {/* History */}
         <section>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
-              Recent cravings
-            </h2>
-            <span className="text-xs text-gray-400">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-5 bg-violet-500 rounded-full" />
+              <h2 className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+                Recent cravings
+              </h2>
+            </div>
+            <span className="text-xs font-medium text-gray-400 bg-white px-2.5 py-1 rounded-full" style={{ boxShadow: "var(--md-shadow-1)" }}>
               {cravings.length} logged
             </span>
           </div>
