@@ -65,7 +65,7 @@ function IntensitySlider({ value, onChange }: IntensitySliderProps) {
       </div>
 
       {/* Custom slider track */}
-      <div className="relative pt-4 pb-2">
+      <div className="relative pt-10 pb-2">
         {/* Value bubble */}
         <div
           className="absolute -top-0 transition-all duration-150 pointer-events-none"
