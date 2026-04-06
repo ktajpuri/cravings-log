@@ -1,3 +1,126 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Material Design elevation shadows */
+:root {
+  --md-shadow-1: 0 1px 2px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
+  --md-shadow-2: 0 2px 4px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.08);
+  --md-shadow-3: 0 4px 8px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+  --md-shadow-4: 0 8px 16px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* ─── Unique Intensity Slider ─────────────────────────────────────────────── */
+
+.intensity-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(to right,
+    #22c55e 0%,
+    #84cc16 25%,
+    #eab308 50%,
+    #f97316 75%,
+    #ef4444 100%
+  );
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+/* Track for Firefox */
+.intensity-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right,
+    #22c55e 0%,
+    #84cc16 25%,
+    #eab308 50%,
+    #f97316 75%,
+    #ef4444 100%
+  );
+}
+
+/* Thumb - WebKit */
+.intensity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid currentColor;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.20), 0 0 0 4px rgba(255,255,255,0.4);
+  cursor: grab;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.intensity-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25), 0 0 0 8px rgba(0,0,0,0.06);
+}
+
+.intensity-slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.1);
+}
+
+/* Thumb - Firefox */
+.intensity-slider::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid currentColor;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.20);
+  cursor: grab;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.intensity-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* ─── Material Ripple (selection chips) ───────────────────────────────────── */
+@keyframes md-ripple {
+  from { transform: scale(0); opacity: 0.4; }
+  to   { transform: scale(2.5); opacity: 0; }
+}
+
+.md-chip {
+  position: relative;
+  overflow: hidden;
+}
+
+.md-chip::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.md-chip:hover::after {
+  opacity: 0.06;
+}
+
+.md-chip:active::after {
+  opacity: 0.12;
+}
+
+/* ─── Smooth focus ring (Material style) ─────────────────────────────────── */
+.md-focus:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+/* ─── Toggle switch ───────────────────────────────────────────────────────── */
+@keyframes thumb-on {
+  from { transform: translateX(2px); }
+  to   { transform: translateX(22px); }
+}

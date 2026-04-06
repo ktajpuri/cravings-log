@@ -9,13 +9,32 @@ export default async function LoginPage() {
   if (session) redirect("/dashboard");
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-white px-4">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-sm text-center">
-        <div className="text-5xl mb-4">🚭</div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">CravingLog</h1>
-        <p className="text-gray-500 text-sm mb-8">
-          Track your cravings, build your streak, reclaim your health.
-        </p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-violet-50 px-4">
+      <div
+        className="bg-white rounded-3xl p-8 w-full max-w-sm"
+        style={{ boxShadow: "0 8px 32px rgba(99,102,241,0.12), 0 2px 8px rgba(0,0,0,0.06)" }}
+      >
+        {/* Logo */}
+        <div className="flex flex-col items-center mb-8">
+          <div className="w-16 h-16 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-lg mb-4"
+            style={{ boxShadow: "0 8px 24px rgba(99,102,241,0.35)" }}
+          >
+            <svg className="w-9 h-9 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">CravingLog</h1>
+          <p className="text-sm text-gray-500 mt-1 text-center">
+            Track your cravings, build your streak,<br />reclaim your health.
+          </p>
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="flex-1 h-px bg-gray-100" />
+          <span className="text-xs text-gray-400 font-medium">Sign in to continue</span>
+          <div className="flex-1 h-px bg-gray-100" />
+        </div>
 
         <form
           action={async () => {
@@ -25,9 +44,9 @@ export default async function LoginPage() {
         >
           <button
             type="submit"
-            className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 hover:border-gray-300 text-gray-700 font-medium py-3 px-4 rounded-xl shadow-sm hover:shadow transition-all"
+            className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 text-gray-700 font-semibold py-3 px-4 rounded-xl shadow-sm hover:shadow transition-all duration-150"
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                 fill="#4285F4"
@@ -49,7 +68,7 @@ export default async function LoginPage() {
           </button>
         </form>
 
-        <p className="text-xs text-gray-400 mt-6">
+        <p className="text-xs text-gray-400 mt-6 text-center">
           Your data is private and only visible to you.
         </p>
       </div>
