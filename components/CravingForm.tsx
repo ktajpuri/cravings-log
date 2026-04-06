@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 
 const TRIGGERS = ["stress", "after coffee", "boredom", "after eating", "social", "alcohol", "anxiety", "habit", "other"];
-const LOCATIONS = ["home", "office", "outside", "car", "bar/restaurant", "other"];
+const LOCATIONS = ["home", "office", "outside", "car", "bar/restaurant", "balcony", "other"];
 
 interface CravingFormProps {
   onSuccess: () => void;
