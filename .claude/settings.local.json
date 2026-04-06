@@ -4,7 +4,9 @@
       "Bash(find /Users/ktajpuri/Library/Application Support/Claude/local-agent-mode-sessions/6ca4e344-1953-4672-b9f8-85fe83e02200/d50ac5e3-abee-46c1-b032-87acd9b1c407/local_0a579e09-769f-4764-bdae-05ecf809ffb5/outputs/craving-log -not -path */node_modules/* -not -path */.next/* -type d)",
       "Bash(npm install:*)",
       "Bash(npm run:*)",
-      "Bash(DATABASE_URL=\"postgresql://neondb_owner:npg_y9qTXOzonCA0@ep-muddy-bird-am6ep6m9.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require\" npm run db:push)"
+      "Bash(DATABASE_URL=\"postgresql://neondb_owner:npg_y9qTXOzonCA0@ep-muddy-bird-am6ep6m9.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require\" npm run db:push)",
+      "Bash(curl -s \"https://api.github.com/repos/ktajpuri/cravings-log/contents\")",
+      "Bash(python3 -c \"import sys,json; [print\\(f[''''name'''']\\) for f in json.load\\(sys.stdin\\)]\")"
     ]
   }
 }
