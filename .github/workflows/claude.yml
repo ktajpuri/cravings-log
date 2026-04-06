@@ -26,3 +26,4 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_args: --append-system-prompt "After making any code changes, always create a pull request with a clear title and description."
