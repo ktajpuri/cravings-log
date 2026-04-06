@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import CravingForm from "@/components/CravingForm";
 import CravingList from "@/components/CravingList";
 import StatsCard from "@/components/StatsCard";
+import CravingsChart from "@/components/CravingsChart";
 
 interface Craving {
   id: string;
@@ -87,6 +88,17 @@ export default function DashboardPage() {
             </h2>
           </div>
           <StatsCard stats={stats} />
+        </section>
+
+        {/* Chart */}
+        <section>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-1 h-5 bg-rose-400 rounded-full" />
+            <h2 className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+              Cravings over time
+            </h2>
+          </div>
+          <CravingsChart cravings={cravings} />
         </section>
 
         {/* Log form */}
