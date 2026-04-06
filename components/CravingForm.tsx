@@ -162,26 +162,36 @@ interface ChipGroupProps {
   accentColor?: string;
 }
 
+const ACCENT_COLORS: Record<string, string> = {
+  indigo: "#4f46e5",
+  violet: "#7c3aed",
+};
+
 function ChipGroup({ label, options, selected, onSelect, accentColor = "indigo" }: ChipGroupProps) {
-  const active = `bg-${accentColor}-600 text-white border-${accentColor}-600 shadow-sm`;
-  const inactive = `bg-white text-gray-600 border-gray-200 hover:border-${accentColor}-300 hover:text-${accentColor}-600`;
+  const color = ACCENT_COLORS[accentColor] ?? ACCENT_COLORS.indigo;
 
   return (
     <div>
       <label className="text-sm font-semibold text-gray-700 block mb-2">{label}</label>
       <div className="flex flex-wrap gap-2">
-        {options.map((opt) => (
-          <button
-            type="button"
-            key={opt}
-            onClick={() => onSelect(selected === opt ? "" : opt)}
-            className={`md-chip px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-150 capitalize ${
-              selected === opt ? active : inactive
-            }`}
-          >
-            {opt}
-          </button>
-        ))}
+        {options.map((opt) => {
+          const isSelected = selected === opt;
+          return (
+            <button
+              type="button"
+              key={opt}
+              onClick={() => onSelect(isSelected ? "" : opt)}
+              className="md-chip px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-150 capitalize"
+              style={
+                isSelected
+                  ? { background: color, color: "#fff", borderColor: color, boxShadow: "0 1px 3px rgba(0,0,0,0.12)" }
+                  : { background: "#fff", color: "#4b5563", borderColor: "#e5e7eb" }
+              }
+            >
+              {opt}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
