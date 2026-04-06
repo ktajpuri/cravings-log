@@ -30,19 +30,28 @@ interface IntensitySliderProps {
   onChange: (v: number) => void;
 }
 
+function haptic(ms = 10) {
+  navigator.vibrate?.(ms);
+}
+
 function IntensitySlider({ value, onChange }: IntensitySliderProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const pct = ((value - 1) / 9) * 100;
   const color = getIntensityColor(value);
   const label = getIntensityLabel(value);
 
+  const handleChange = useCallback((newVal: number) => {
+    if (newVal !== value) haptic();
+    onChange(newVal);
+  }, [value, onChange]);
+
   const handleTrackClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const ratio = Math.max(0, Math.min(1, x / rect.width));
     const newVal = Math.round(ratio * 9) + 1;
-    onChange(newVal);
-  }, [onChange]);
+    handleChange(newVal);
+  }, [handleChange]);
 
   return (
     <div className="space-y-3">
@@ -104,7 +113,7 @@ function IntensitySlider({ value, onChange }: IntensitySliderProps) {
             max={10}
             step={1}
             value={value}
-            onChange={(e) => onChange(Number(e.target.value))}
+            onChange={(e) => handleChange(Number(e.target.value))}
             className="intensity-slider absolute inset-0 w-full opacity-0 h-full cursor-pointer z-10"
             style={{ color }}
             aria-label="Intensity"
