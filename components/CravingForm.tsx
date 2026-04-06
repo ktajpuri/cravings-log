@@ -325,6 +325,7 @@ export default function CravingForm({ onSuccess }: CravingFormProps) {
   }
 
   return (
+    <>
     <form
       onSubmit={handleSubmit}
       className="bg-white rounded-2xl p-6 space-y-6"
@@ -447,5 +448,6 @@ export default function CravingForm({ onSuccess }: CravingFormProps) {
       cravingId={savedCravingId}
       onMarkResisted={onSuccess}
     />
+    </>
   );
 }
