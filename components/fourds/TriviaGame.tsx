@@ -1,7 +1,16 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { TRIVIA_QUESTIONS } from "@/lib/triviaQuestions";
+import { useState, useEffect } from "react";
+
+interface TriviaQuestion {
+  id: string;
+  question: string;
+  answers: string[];
+  correct: number;
+  category: string;
+  type: string;
+  difficulty: number;
+}
 
 interface TriviaGameProps {
   onComplete: () => void;
@@ -9,33 +18,51 @@ interface TriviaGameProps {
 
 const TOTAL_QUESTIONS = 5;
 
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+const CATEGORY_LABELS: Record<string, string> = {
+  geography: "🌍 Geography",
+  science: "🔬 Science",
+  math: "🔢 Math",
+  history: "📜 History",
+  riddle: "🤔 Riddle",
+  wordplay: "🔤 Wordplay",
+  culture: "🎭 Culture",
+  language: "📚 Language",
+  puzzle: "🧩 Puzzle",
+};
 
 export default function TriviaGame({ onComplete }: TriviaGameProps) {
-  const questions = useMemo(() => shuffle(TRIVIA_QUESTIONS).slice(0, TOTAL_QUESTIONS), []);
+  const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
+
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
 
-  const q = questions[current];
-  const isCorrect = selected === q.correct;
+  useEffect(() => {
+    setLoading(true);
+    setError(false);
+    setCurrent(0);
+    setSelected(null);
+    setScore(0);
+    setDone(false);
+
+    fetch(`/api/trivia?count=${TOTAL_QUESTIONS}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((data) => { setQuestions(data); setLoading(false); })
+      .catch(() => { setError(true); setLoading(false); });
+  }, [retryKey]);
 
   function handleAnswer(idx: number) {
     if (selected !== null) return;
     setSelected(idx);
-    if (idx === q.correct) setScore((s) => s + 1);
+    if (idx === questions[current].correct) setScore((s) => s + 1);
   }
 
   function handleNext() {
-    if (current + 1 >= TOTAL_QUESTIONS) {
+    if (current + 1 >= questions.length) {
       setDone(true);
     } else {
       setCurrent((c) => c + 1);
@@ -43,13 +70,39 @@ export default function TriviaGame({ onComplete }: TriviaGameProps) {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="space-y-3 animate-pulse">
+        <div className="h-4 bg-gray-200 rounded w-3/4" />
+        <div className="grid grid-cols-2 gap-2">
+          {[0, 1, 2, 3].map((i) => <div key={i} className="h-10 bg-gray-100 rounded-xl" />)}
+        </div>
+      </div>
+    );
+  }
+
+  if (error || questions.length === 0) {
+    return (
+      <div className="text-center space-y-3 py-2">
+        <p className="text-sm text-gray-500">Couldn't load questions.</p>
+        <button
+          onClick={() => setRetryKey((k) => k + 1)}
+          className="px-4 py-2 rounded-xl text-sm font-semibold text-white"
+          style={{ background: "#7c3aed" }}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
   if (done) {
-    const perfect = score === TOTAL_QUESTIONS;
+    const perfect = score === questions.length;
     return (
       <div className="text-center space-y-4 py-2">
         <div className="text-4xl">{perfect ? "🎉" : score >= 3 ? "👏" : "🧠"}</div>
         <div>
-          <p className="font-bold text-gray-900 text-lg">{score}/{TOTAL_QUESTIONS} correct</p>
+          <p className="font-bold text-gray-900 text-lg">{score}/{questions.length} correct</p>
           <p className="text-sm text-gray-500 mt-1">
             {perfect ? "Perfect score! Your mind is sharp." : score >= 3 ? "Great job — craving distracted!" : "Good try — distraction complete!"}
           </p>
@@ -65,9 +118,12 @@ export default function TriviaGame({ onComplete }: TriviaGameProps) {
     );
   }
 
+  const q = questions[current];
+  const isCorrect = selected === q.correct;
+
   return (
     <div className="space-y-4">
-      {/* Progress */}
+      {/* Progress + category */}
       <div className="flex items-center justify-between">
         <div className="flex gap-1">
           {questions.map((_, i) => (
@@ -78,7 +134,12 @@ export default function TriviaGame({ onComplete }: TriviaGameProps) {
             />
           ))}
         </div>
-        <span className="text-xs text-gray-400 font-medium">{current + 1} / {TOTAL_QUESTIONS}</span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "#f5f3ff", color: "#7c3aed" }}>
+            {CATEGORY_LABELS[q.category] ?? q.category}
+          </span>
+          <span className="text-xs text-gray-400">{current + 1}/{questions.length}</span>
+        </div>
       </div>
 
       {/* Question */}
@@ -122,7 +183,7 @@ export default function TriviaGame({ onComplete }: TriviaGameProps) {
             className="w-full py-2 rounded-xl text-sm font-semibold text-white transition-all"
             style={{ background: "#7c3aed" }}
           >
-            {current + 1 >= TOTAL_QUESTIONS ? "See results" : "Next question →"}
+            {current + 1 >= questions.length ? "See results" : "Next question →"}
           </button>
         </div>
       )}

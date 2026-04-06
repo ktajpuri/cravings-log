@@ -6,7 +6,14 @@
       "Bash(npm run:*)",
       "Bash(DATABASE_URL=\"postgresql://neondb_owner:npg_y9qTXOzonCA0@ep-muddy-bird-am6ep6m9.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require\" npm run db:push)",
       "Bash(curl -s \"https://api.github.com/repos/ktajpuri/cravings-log/contents\")",
-      "Bash(python3 -c \"import sys,json; [print\\(f[''''name'''']\\) for f in json.load\\(sys.stdin\\)]\")"
+      "Bash(python3 -c \"import sys,json; [print\\(f[''''name'''']\\) for f in json.load\\(sys.stdin\\)]\")",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(git push:*)",
+      "Bash(kill 95090:*)",
+      "Bash(npx prisma:*)",
+      "Bash(./node_modules/.bin/prisma generate:*)",
+      "Bash(./node_modules/.bin/prisma db:*)"
     ]
   }
 }

@@ -30,6 +30,21 @@ model Craving {
   @@index([createdAt])
 }
 
+model TriviaQuestion {
+  id         String   @id @default(cuid())
+  question   String   @unique
+  answers    String[]
+  correct    Int
+  category   String   // "geography" | "science" | "math" | "history" | "wordplay" | "riddle" | "culture" | "language"
+  type       String   // "trivia" | "math" | "riddle" | "wordplay" | "puzzle"
+  difficulty Int      @default(1) // 1=easy, 2=medium, 3=hard
+
+  createdAt  DateTime @default(now())
+
+  @@index([category])
+  @@index([type])
+}
+
 // ─── NextAuth Models ──────────────────────────────────────────
 
 model User {
