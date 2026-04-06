@@ -33,7 +33,7 @@ export default function StatsCard({ stats }: StatsCardProps) {
       suffix: stats.currentStreak === 1 ? "day" : "days",
       color: "text-purple-600",
       bg: "bg-purple-50",
-      emoji: "🔥",
+      emoji: "⚡",
     },
     {
       value: stats.resistanceRate,
