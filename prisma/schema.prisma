@@ -40,9 +40,24 @@ model User {
   image         String?
   createdAt     DateTime  @default(now())
 
-  accounts Account[]
-  sessions Session[]
-  cravings Craving[]
+  accounts      Account[]
+  sessions      Session[]
+  cravings      Craving[]
+  userOptions   UserOption[]
+}
+
+model UserOption {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type      String   // "trigger" | "location"
+  value     String
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, type, value])
+  @@index([userId, type])
 }
 
 model Account {

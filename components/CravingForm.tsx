@@ -1,9 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
-
-const TRIGGERS = ["stress", "after coffee", "boredom", "after eating", "social", "alcohol", "anxiety", "habit", "other"];
-const LOCATIONS = ["home", "office", "outside", "car", "bar/restaurant", "balcony", "other"];
+import { useState, useRef, useCallback, useEffect } from "react";
 
 interface CravingFormProps {
   onSuccess: () => void;
@@ -159,6 +156,7 @@ interface ChipGroupProps {
   options: string[];
   selected: string;
   onSelect: (val: string) => void;
+  onAddCustom: (val: string) => void;
   accentColor?: string;
 }
 
@@ -167,14 +165,43 @@ const ACCENT_COLORS: Record<string, string> = {
   violet: "#7c3aed",
 };
 
-function ChipGroup({ label, options, selected, onSelect, accentColor = "indigo" }: ChipGroupProps) {
+function ChipGroup({ label, options, selected, onSelect, onAddCustom, accentColor = "indigo" }: ChipGroupProps) {
   const color = ACCENT_COLORS[accentColor] ?? ACCENT_COLORS.indigo;
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [customValue, setCustomValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleOtherClick = () => {
+    if (selected === "other") {
+      onSelect("");
+      return;
+    }
+    setShowCustomInput(true);
+    setTimeout(() => inputRef.current?.focus(), 0);
+  };
+
+  const commitCustom = () => {
+    const val = customValue.trim();
+    if (val) {
+      onAddCustom(val);
+      onSelect(val);
+    }
+    setShowCustomInput(false);
+    setCustomValue("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") { e.preventDefault(); commitCustom(); }
+    if (e.key === "Escape") { setShowCustomInput(false); setCustomValue(""); }
+  };
+
+  const optionsWithoutOther = options.filter((o) => o !== "other");
 
   return (
     <div>
       <label className="text-sm font-semibold text-gray-700 block mb-2">{label}</label>
       <div className="flex flex-wrap gap-2">
-        {options.map((opt) => {
+        {optionsWithoutOther.map((opt) => {
           const isSelected = selected === opt;
           return (
             <button
@@ -192,6 +219,39 @@ function ChipGroup({ label, options, selected, onSelect, accentColor = "indigo" 
             </button>
           );
         })}
+
+        {/* Other chip */}
+        {!showCustomInput && (
+          <button
+            type="button"
+            onClick={handleOtherClick}
+            className="md-chip px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-150"
+            style={
+              selected === "other"
+                ? { background: color, color: "#fff", borderColor: color, boxShadow: "0 1px 3px rgba(0,0,0,0.12)" }
+                : { background: "#fff", color: "#4b5563", borderColor: "#e5e7eb" }
+            }
+          >
+            other
+          </button>
+        )}
+
+        {/* Inline custom input */}
+        {showCustomInput && (
+          <div className="flex items-center gap-1">
+            <input
+              ref={inputRef}
+              type="text"
+              value={customValue}
+              onChange={(e) => setCustomValue(e.target.value)}
+              onBlur={commitCustom}
+              onKeyDown={handleKeyDown}
+              placeholder="Type & press Enter"
+              className="px-3 py-1.5 rounded-full text-xs font-medium border border-gray-300 focus:outline-none focus:ring-2 focus:border-transparent w-36"
+              style={{ focusRingColor: color } as React.CSSProperties}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -205,6 +265,32 @@ export default function CravingForm({ onSuccess }: CravingFormProps) {
   const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [triggers, setTriggers] = useState<string[]>([]);
+  const [locations, setLocations] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch("/api/options?type=trigger").then((r) => r.json()).then((d) => setTriggers(d.options ?? []));
+    fetch("/api/options?type=location").then((r) => r.json()).then((d) => setLocations(d.options ?? []));
+  }, []);
+
+  async function addCustomOption(type: "trigger" | "location", value: string) {
+    await fetch("/api/options", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type, value }),
+    });
+    if (type === "trigger") {
+      setTriggers((prev) => {
+        const without = prev.filter((o) => o !== "other");
+        return [...without, value, "other"];
+      });
+    } else {
+      setLocations((prev) => {
+        const without = prev.filter((o) => o !== "other");
+        return [...without, value, "other"];
+      });
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -260,18 +346,20 @@ export default function CravingForm({ onSuccess }: CravingFormProps) {
       {/* Trigger chips */}
       <ChipGroup
         label="Trigger"
-        options={TRIGGERS}
+        options={triggers}
         selected={trigger}
         onSelect={setTrigger}
+        onAddCustom={(val) => { addCustomOption("trigger", val); }}
         accentColor="indigo"
       />
 
       {/* Location chips */}
       <ChipGroup
         label="Location"
-        options={LOCATIONS}
+        options={locations}
         selected={location}
         onSelect={setLocation}
+        onAddCustom={(val) => { addCustomOption("location", val); }}
         accentColor="violet"
       />
 
