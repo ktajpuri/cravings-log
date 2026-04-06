@@ -15,6 +15,7 @@ interface Craving {
 interface CravingListProps {
   cravings: Craving[];
   onDelete: (id: string) => void;
+  loading?: boolean;
 }
 
 function intensityStyles(n: number): { bg: string; text: string; bar: string } {
@@ -33,8 +34,30 @@ function formatDate(dateStr: string) {
   });
 }
 
-export default function CravingList({ cravings, onDelete }: CravingListProps) {
+export default function CravingList({ cravings, onDelete, loading }: CravingListProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  if (loading) {
+    return (
+      <div className="space-y-2.5">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="bg-white rounded-2xl overflow-hidden animate-pulse" style={{ boxShadow: "var(--md-shadow-1)" }}>
+            <div className="h-0.5 bg-gray-100 w-1/2" />
+            <div className="p-4 flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gray-100 flex-shrink-0" />
+              <div className="flex-1 space-y-2">
+                <div className="flex gap-1.5">
+                  <div className="h-5 w-16 bg-gray-100 rounded-full" />
+                  <div className="h-5 w-20 bg-gray-100 rounded-full" />
+                </div>
+                <div className="h-3.5 w-24 bg-gray-50 rounded" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   async function handleDelete(id: string) {
     setDeletingId(id);
