@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import FourDsModal from "@/components/FourDsModal";
 
 interface CravingFormProps {
   onSuccess: () => void;
@@ -267,6 +268,8 @@ export default function CravingForm({ onSuccess }: CravingFormProps) {
   const [error, setError] = useState("");
   const [triggers, setTriggers] = useState<string[]>([]);
   const [locations, setLocations] = useState<string[]>([]);
+  const [showFourDs, setShowFourDs] = useState(false);
+  const [savedCravingId, setSavedCravingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/options?type=trigger").then((r) => r.json()).then((d) => setTriggers(d.options ?? []));
@@ -306,12 +309,14 @@ export default function CravingForm({ onSuccess }: CravingFormProps) {
 
       if (!res.ok) throw new Error("Failed to save craving");
 
+      const saved = await res.json();
       setIntensity(5);
       setTrigger("");
       setNotes("");
       setResisted(false);
       setLocation("");
-      onSuccess();
+      setSavedCravingId(saved.id ?? null);
+      setShowFourDs(true);
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -435,5 +440,12 @@ export default function CravingForm({ onSuccess }: CravingFormProps) {
         )}
       </button>
     </form>
+
+    <FourDsModal
+      open={showFourDs}
+      onClose={() => { setShowFourDs(false); onSuccess(); }}
+      cravingId={savedCravingId}
+      onMarkResisted={onSuccess}
+    />
   );
 }
