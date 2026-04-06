@@ -17,6 +17,14 @@ out/
 # Prisma
 prisma/migrations/
 
+# Test output
+coverage/
+test-results/
+playwright-report/
+
+# Claude Code local settings
+.claude/settings.local.json
+
 # Misc
 .DS_Store
 *.pem
