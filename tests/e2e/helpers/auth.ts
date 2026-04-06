@@ -5,11 +5,11 @@ export async function loginAsTestUser(
   email = "testuser@test.cravingslog",
   name = "Test User"
 ) {
-  await page.goto("/api/auth/signin");
-  // Click the "Test" credentials provider button
-  await page.getByRole("link", { name: /test/i }).click();
+  // Go directly to the credentials provider form — skips the provider list page
+  // and avoids brittle link/button selectors that vary by NextAuth version.
+  await page.goto("/api/auth/signin/test-credentials");
   await page.fill('input[name="email"]', email);
   await page.fill('input[name="name"]', name);
-  await page.getByRole("button", { name: /sign in/i }).click();
+  await page.click('button[type="submit"]');
   await page.waitForURL("**/dashboard", { timeout: 10_000 });
 }
