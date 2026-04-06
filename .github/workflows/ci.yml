@@ -38,7 +38,7 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: root
+          POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpass
           POSTGRES_DB: cravings_test
         ports:
@@ -50,7 +50,7 @@ jobs:
           --health-retries 5
 
     env:
-      DATABASE_URL: postgresql://root:testpass@localhost:5432/cravings_test
+      DATABASE_URL: postgresql://testuser:testpass@localhost:5432/cravings_test
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
       AUTH_GOOGLE_ID: ci-dummy-google-id
       AUTH_GOOGLE_SECRET: ci-dummy-google-secret
