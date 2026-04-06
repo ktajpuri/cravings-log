@@ -1,6 +1,7 @@
 export interface CravingRecord {
   intensity: number;
   trigger: string | null;
+  location: string | null;
   resisted: boolean;
   createdAt: Date;
 }
@@ -11,6 +12,7 @@ export interface ComputedStats {
   resistanceRate: string;
   averageIntensity: number;
   mostCommonTrigger: string | null;
+  mostCommonLocation: string | null;
   todayCount: number;
   currentStreak: number;
 }
@@ -32,6 +34,14 @@ export function computeStats(cravings: CravingRecord[], now: Date = new Date()):
   }
   const mostCommonTrigger =
     Object.entries(triggerMap).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+
+  // Most common location
+  const locationMap: Record<string, number> = {};
+  for (const c of cravings) {
+    if (c.location) locationMap[c.location] = (locationMap[c.location] ?? 0) + 1;
+  }
+  const mostCommonLocation =
+    Object.entries(locationMap).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
 
   // Today's count — use UTC midnight to avoid timezone drift
   const todayMidnight = new Date(now);
@@ -81,6 +91,7 @@ export function computeStats(cravings: CravingRecord[], now: Date = new Date()):
     resistanceRate: `${resistanceRate}%`,
     averageIntensity,
     mostCommonTrigger,
+    mostCommonLocation,
     todayCount,
     currentStreak: streak,
   };

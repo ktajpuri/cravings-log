@@ -7,12 +7,13 @@ function makeCraving(
   resisted: boolean,
   intensity = 5,
   trigger: string | null = null,
-  now: Date = new Date()
+  now: Date = new Date(),
+  location: string | null = null
 ): CravingRecord {
   const d = new Date(now);
   d.setUTCDate(d.getUTCDate() - daysAgo);
   d.setUTCHours(12, 0, 0, 0); // UTC noon — stays on the intended UTC date regardless of local timezone
-  return { intensity, trigger, resisted, createdAt: d };
+  return { intensity, trigger, location, resisted, createdAt: d };
 }
 
 describe("computeStats", () => {
@@ -26,6 +27,7 @@ describe("computeStats", () => {
       expect(stats.resistanceRate).toBe("0%");
       expect(stats.averageIntensity).toBe(0);
       expect(stats.mostCommonTrigger).toBeNull();
+      expect(stats.mostCommonLocation).toBeNull();
       expect(stats.todayCount).toBe(0);
       expect(stats.currentStreak).toBe(0);
     });
