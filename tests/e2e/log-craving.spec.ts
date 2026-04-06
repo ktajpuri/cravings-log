@@ -1,4 +1,4 @@
-import { test, expect, request } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import { loginAsTestUser } from "./helpers/auth";
 
 const TEST_EMAIL = "craving-test@test.cravingslog";
@@ -14,25 +14,17 @@ test.describe("Log a craving", () => {
   });
 
   test("can select a trigger chip", async ({ page }) => {
-    // Wait for chips to load from API
     await page.waitForSelector("button:has-text('stress')", { timeout: 5000 });
     await page.getByRole("button", { name: "stress" }).click();
-    // After click the chip should be selected (style change — just verify no error)
     await expect(page.getByRole("button", { name: "stress" })).toBeVisible();
   });
 
   test("submitting a craving opens the 4Ds modal", async ({ page }) => {
-    // Set intensity via the hidden range input
     await page.locator('input[type="range"]').fill("7");
-
-    // Select a trigger
     await page.waitForSelector("button:has-text('stress')", { timeout: 5000 });
     await page.getByRole("button", { name: "stress" }).click();
-
-    // Submit
     await page.getByRole("button", { name: /log craving/i }).click();
 
-    // 4Ds modal should appear
     await expect(page.getByText("The 4Ds")).toBeVisible({ timeout: 5000 });
     await expect(page.getByText("Drink Water")).toBeVisible();
   });
@@ -42,35 +34,43 @@ test.describe("Log a craving", () => {
     await page.getByRole("button", { name: /log craving/i }).click();
     await page.waitForSelector("text=The 4Ds");
 
-    // Close modal
-    await page.getByRole("button", { name: /close/i }).first().click();
+    // Close via the X button
+    await page.locator('[aria-label="4Ds craving relief"] button').first().click();
 
-    // Craving should appear in the recent cravings list
-    await expect(page.getByText(/craving/i)).toBeVisible();
+    // Dashboard should show the craving in the list
+    await expect(page.getByText("Recent cravings")).toBeVisible();
   });
 
-  test("completing the 4Ds and marking resisted updates the craving", async ({ page }) => {
+  test("can advance through Drink Water step", async ({ page }) => {
+    await page.locator('input[type="range"]').fill("5");
+    await page.getByRole("button", { name: /log craving/i }).click();
+    await page.waitForSelector("text=The 4Ds");
+
+    // Should be on Drink Water step
+    await expect(page.getByText("Drink a full glass of water")).toBeVisible();
+
+    // Advance with the CTA
+    await page.getByRole("button", { name: /i drank water/i }).click();
+
+    // Should advance to Delay step
+    await expect(page.getByText("Delay for 5 minutes")).toBeVisible();
+  });
+
+  test("can skip to the end and mark as resisted", async ({ page }) => {
     await page.locator('input[type="range"]').fill("6");
     await page.getByRole("button", { name: /log craving/i }).click();
     await page.waitForSelector("text=The 4Ds");
 
-    // Skip through all 4 steps
+    // Skip all 4 steps
     for (let i = 0; i < 4; i++) {
-      const skipBtn = page.getByRole("button", { name: /skip this step/i });
-      if (await skipBtn.isVisible()) {
-        await skipBtn.click();
-      } else {
-        // Use the CTA button
-        const ctaBtn = page.getByRole("button", { name: /i (drank|waited|reached)/i });
-        if (await ctaBtn.isVisible()) await ctaBtn.click();
-      }
+      await page.getByRole("button", { name: /skip this step/i }).click();
     }
 
-    // Should reach completion screen
-    await expect(page.getByText(/mark craving as resisted/i)).toBeVisible({ timeout: 10_000 });
+    // Completion screen
+    await expect(page.getByRole("button", { name: /mark craving as resisted/i })).toBeVisible({ timeout: 5000 });
     await page.getByRole("button", { name: /mark craving as resisted/i }).click();
 
     // Modal should close
-    await expect(page.getByText("The 4Ds")).not.toBeVisible({ timeout: 5000 });
+    await expect(page.getByText("The 4Ds")).not.toBeVisible();
   });
 });
