@@ -38,9 +38,9 @@ export default function StatsCard({ stats }: StatsCardProps) {
     {
       value: stats.resistanceRate,
       label: "Resistance rate",
-      color: "text-green-600",
-      bg: "bg-green-50",
-      emoji: "💪",
+      color: "text-cyan-600",
+      bg: "bg-cyan-50",
+      emoji: "🛡️",
     },
     {
       value: stats.todayCount,
