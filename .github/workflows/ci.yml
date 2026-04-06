@@ -44,7 +44,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U testuser -d cravings_test"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -55,7 +55,8 @@ jobs:
       AUTH_GOOGLE_ID: ci-dummy-google-id
       AUTH_GOOGLE_SECRET: ci-dummy-google-secret
       AUTH_TEST_MODE: "true"
-      NEXTAUTH_URL: http://localhost:3000
+      AUTH_URL: http://localhost:3000
+      AUTH_TRUST_HOST: "true"
       PLAYWRIGHT_BASE_URL: http://localhost:3000
 
     steps:
