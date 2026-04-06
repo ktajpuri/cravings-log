@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 // GET /api/cravings — list all cravings for the logged-in user
 export async function GET(req: NextRequest) {
   const session = await auth();
