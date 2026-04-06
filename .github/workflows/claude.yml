@@ -1,4 +1,11 @@
 name: Claude Code
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+
 on:
   issue_comment:
     types: [created]
