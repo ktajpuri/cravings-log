@@ -4,6 +4,7 @@ interface Stats {
   resistanceRate: string;
   averageIntensity: number;
   mostCommonTrigger: string | null;
+  mostCommonLocation: string | null;
   todayCount: number;
   currentStreak: number;
 }
@@ -103,20 +104,41 @@ export default function StatsCard({ stats }: StatsCardProps) {
         ))}
       </div>
 
-      {stats.mostCommonTrigger && (
-        <div
-          className="bg-white rounded-2xl px-4 py-3 flex items-center gap-3"
-          style={{ boxShadow: "var(--md-shadow-1)" }}
-        >
-          <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center flex-shrink-0">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-            </svg>
-          </div>
-          <div>
-            <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Most common trigger</p>
-            <p className="text-sm font-semibold text-gray-800 capitalize">{stats.mostCommonTrigger}</p>
-          </div>
+      {(stats.mostCommonTrigger || stats.mostCommonLocation) && (
+        <div className="grid grid-cols-2 gap-3">
+          {stats.mostCommonTrigger && (
+            <div
+              className="bg-white rounded-2xl px-4 py-3 flex items-center gap-3"
+              style={{ boxShadow: "var(--md-shadow-1)" }}
+            >
+              <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Top trigger</p>
+                <p className="text-sm font-semibold text-gray-800 capitalize truncate">{stats.mostCommonTrigger}</p>
+              </div>
+            </div>
+          )}
+          {stats.mostCommonLocation && (
+            <div
+              className="bg-white rounded-2xl px-4 py-3 flex items-center gap-3"
+              style={{ boxShadow: "var(--md-shadow-1)" }}
+            >
+              <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Top location</p>
+                <p className="text-sm font-semibold text-gray-800 capitalize truncate">{stats.mostCommonLocation}</p>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
