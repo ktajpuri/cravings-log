@@ -39,7 +39,7 @@ const STEPS = [
       </svg>
     ),
     title: "Delay for 5 minutes",
-    body: "Cravings peak and pass like waves — most fade within 5 minutes. Watch the timer below and remind yourself: this feeling is temporary.",
+    body: "Cravings peak and pass like waves — most fade within 5 minutes. Follow the breathing guide below to stay calm.",
     cta: "I waited it out ✓",
   },
   {
@@ -75,35 +75,116 @@ const STEPS = [
   },
 ];
 
+// Breathing cycle: inhale 4s, hold 4s, exhale 4s, hold 4s = 16s total
+const BREATH_CYCLE = 16;
+const BREATH_PHASES = [
+  { label: "Inhale", duration: 4, scale: 1.35 },
+  { label: "Hold",   duration: 4, scale: 1.35 },
+  { label: "Exhale", duration: 4, scale: 1.0  },
+  { label: "Hold",   duration: 4, scale: 1.0  },
+];
+
+const AFFIRMATIONS = [
+  "This craving is temporary. It will pass.",
+  "You are stronger than this urge.",
+  "Every breath brings you closer to calm.",
+  "You've resisted before. You can do it again.",
+  "The discomfort is temporary. Your health is permanent.",
+  "Breathe through it — you're doing great.",
+  "Each second is a small victory.",
+  "Your future self is proud of you right now.",
+  "The wave is peaking. It will fade.",
+  "You are in control.",
+  "One breath at a time.",
+  "You chose your health. Keep going.",
+];
+
+function getBreathPhase(elapsed: number) {
+  const pos = elapsed % BREATH_CYCLE;
+  let acc = 0;
+  for (let i = 0; i < BREATH_PHASES.length; i++) {
+    acc += BREATH_PHASES[i].duration;
+    if (pos < acc) return { ...BREATH_PHASES[i], index: i };
+  }
+  return { ...BREATH_PHASES[0], index: 0 };
+}
+
 function DelayTimer({ onDone }: { onDone: () => void }) {
   const [seconds, setSeconds] = useState(5 * 60);
   const [finished, setFinished] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const affirmationIndex = Math.floor(elapsed / 20) % AFFIRMATIONS.length;
 
   useEffect(() => {
     if (seconds <= 0) { setFinished(true); onDone(); return; }
-    const t = setTimeout(() => setSeconds((s) => s - 1), 1000);
+    const t = setTimeout(() => { setSeconds((s) => s - 1); setElapsed((e) => e + 1); }, 1000);
     return () => clearTimeout(t);
   }, [seconds, onDone]);
 
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
   const pct = ((5 * 60 - seconds) / (5 * 60)) * 100;
+  const phase = getBreathPhase(elapsed);
 
   return (
-    <div className="space-y-3">
-      <div className="flex justify-center">
-        <span className="text-3xl font-bold tabular-nums" style={{ color: finished ? "#10b981" : "#f59e0b" }}>
-          {finished ? "Done!" : `${mins}:${secs.toString().padStart(2, "0")}`}
-        </span>
+    <div className="space-y-4">
+      {/* Breathing circle */}
+      <div className="flex flex-col items-center gap-3 py-2">
+        <div className="relative flex items-center justify-center">
+          {/* Outer pulse ring */}
+          <div
+            className="absolute rounded-full opacity-20 transition-all"
+            style={{
+              width: 110,
+              height: 110,
+              background: finished ? "#10b981" : "#f59e0b",
+              transform: `scale(${finished ? 1 : phase.scale})`,
+              transitionDuration: `${phase.duration * 1000}ms`,
+              transitionTimingFunction: phase.label === "Inhale" ? "ease-in" : phase.label === "Exhale" ? "ease-out" : "linear",
+            }}
+          />
+          {/* Inner circle */}
+          <div
+            className="relative rounded-full flex items-center justify-center transition-all"
+            style={{
+              width: 80,
+              height: 80,
+              background: finished ? "#10b981" : "#f59e0b",
+              transform: `scale(${finished ? 1 : phase.scale})`,
+              transitionDuration: `${phase.duration * 1000}ms`,
+              transitionTimingFunction: phase.label === "Inhale" ? "ease-in" : phase.label === "Exhale" ? "ease-out" : "linear",
+            }}
+          >
+            <span className="text-white text-xl font-bold tabular-nums">
+              {finished ? "✓" : `${mins}:${secs.toString().padStart(2, "0")}`}
+            </span>
+          </div>
+        </div>
+
+        {/* Breath phase label */}
+        {!finished && (
+          <p className="text-sm font-semibold tracking-wide" style={{ color: "#f59e0b" }}>
+            {phase.label}
+          </p>
+        )}
       </div>
-      <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+
+      {/* Progress bar */}
+      <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-1000"
           style={{ width: `${pct}%`, background: finished ? "#10b981" : "#f59e0b" }}
         />
       </div>
+
+      {/* Affirmation */}
       {!finished && (
-        <p className="text-xs text-center text-gray-400">The craving will pass — hang in there</p>
+        <p
+          key={affirmationIndex}
+          className="text-xs text-center text-gray-500 italic leading-relaxed animate-pulse"
+        >
+          "{AFFIRMATIONS[affirmationIndex]}"
+        </p>
       )}
     </div>
   );
