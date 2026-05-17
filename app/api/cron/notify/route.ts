@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
 
     const payload = JSON.stringify({
       title: "CravingLog — heads up",
-      body: "This is usually when cravings hit. 4Ds are ready if you need them.",
+      body: "This is usually when cravings hit. 5Ds are ready if you need them.",
       url: "/dashboard",
     });
 

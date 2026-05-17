@@ -21,28 +21,28 @@ test.describe("Log a craving", () => {
     await expect(page.getByRole("button", { name: "stress" })).toBeVisible();
   });
 
-  test("submitting a craving opens the 4Ds modal", async ({ page }) => {
+  test("submitting a craving opens the 5Ds modal", async ({ page }) => {
     await page.locator('input[aria-label="Intensity"]').fill("7");
     await page.getByRole("button", { name: "stress" }).click();
     await page.getByRole("button", { name: /log craving/i }).click();
 
-    await expect(page.getByText("The 4Ds")).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText("The 5Ds")).toBeVisible({ timeout: 5000 });
     await expect(page.getByText("Drink Water")).toBeVisible();
   });
 
-  test("closing the 4Ds modal adds craving to the list", async ({ page }) => {
+  test("closing the 5Ds modal adds craving to the list", async ({ page }) => {
     await page.locator('input[aria-label="Intensity"]').fill("5");
     await page.getByRole("button", { name: /log craving/i }).click();
-    await page.waitForSelector("text=The 4Ds");
+    await page.waitForSelector("text=The 5Ds");
 
-    await page.locator('[aria-label="4Ds craving relief"] button').first().click();
+    await page.locator('[aria-label="5Ds craving relief"] button').first().click();
     await expect(page.getByText("Recent cravings")).toBeVisible();
   });
 
   test("can advance through Drink Water step", async ({ page }) => {
     await page.locator('input[aria-label="Intensity"]').fill("5");
     await page.getByRole("button", { name: /log craving/i }).click();
-    await page.waitForSelector("text=The 4Ds");
+    await page.waitForSelector("text=The 5Ds");
 
     await expect(page.getByText("Drink a full glass of water")).toBeVisible();
     await page.getByRole("button", { name: /i drank water/i }).click();
@@ -52,14 +52,14 @@ test.describe("Log a craving", () => {
   test("can skip to the end and mark as resisted", async ({ page }) => {
     await page.locator('input[aria-label="Intensity"]').fill("6");
     await page.getByRole("button", { name: /log craving/i }).click();
-    await page.waitForSelector("text=The 4Ds");
+    await page.waitForSelector("text=The 5Ds");
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 5; i++) {
       await page.getByRole("button", { name: /skip this step/i }).click();
     }
 
     await expect(page.getByRole("button", { name: /mark craving as resisted/i })).toBeVisible({ timeout: 5000 });
     await page.getByRole("button", { name: /mark craving as resisted/i }).click();
-    await expect(page.locator('[aria-label="4Ds craving relief"]')).not.toBeVisible();
+    await expect(page.locator('[aria-label="5Ds craving relief"]')).not.toBeVisible();
   });
 });

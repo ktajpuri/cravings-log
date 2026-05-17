@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import FourDsModal from "@/components/FourDsModal";
+import FiveDsModal from "@/components/FiveDsModal";
 import { getIntensityColor, getIntensityLabel } from "@/lib/intensity";
 
 interface CravingFormProps {
@@ -253,7 +253,7 @@ export default function CravingForm({ onSuccess }: CravingFormProps) {
   const [error, setError] = useState("");
   const [triggers, setTriggers] = useState<string[]>([]);
   const [locations, setLocations] = useState<string[]>([]);
-  const [showFourDs, setShowFourDs] = useState(false);
+  const [showFiveDsModal, setShowFiveDsModal] = useState(false);
   const [savedCravingId, setSavedCravingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -301,7 +301,7 @@ export default function CravingForm({ onSuccess }: CravingFormProps) {
       setResisted(false);
       setLocation("");
       setSavedCravingId(saved.id ?? null);
-      setShowFourDs(true);
+      setShowFiveDsModal(true);
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -428,9 +428,9 @@ export default function CravingForm({ onSuccess }: CravingFormProps) {
       </button>
     </form>
 
-    <FourDsModal
-      open={showFourDs}
-      onClose={() => { setShowFourDs(false); onSuccess(); }}
+    <FiveDsModal
+      open={showFiveDsModal}
+      onClose={() => { setShowFiveDsModal(false); onSuccess(); }}
       cravingId={savedCravingId}
       onMarkResisted={onSuccess}
     />
