@@ -8,8 +8,8 @@ test.describe("Craving management", () => {
 
     await page.locator('input[aria-label="Intensity"]').fill("4");
     await page.getByRole("button", { name: /log craving/i }).click();
-    await page.waitForSelector("text=The 4Ds");
-    await page.locator('[aria-label="4Ds craving relief"] button').first().click();
+    await page.waitForSelector("text=The 5Ds");
+    await page.locator('[aria-label="5Ds craving relief"] button').first().click();
 
     const deleteBtn = page.getByRole("button", { name: /delete/i }).first();
     await expect(deleteBtn).toBeVisible({ timeout: 5000 });
@@ -30,8 +30,8 @@ test.describe("Craving management", () => {
     await pageA.locator('input[aria-label="Intensity"]').fill("9");
     await pageA.fill("textarea", "This is User A's private note");
     await pageA.getByRole("button", { name: /log craving/i }).click();
-    await pageA.waitForSelector("text=The 4Ds");
-    await pageA.locator('[aria-label="4Ds craving relief"] button').first().click();
+    await pageA.waitForSelector("text=The 5Ds");
+    await pageA.locator('[aria-label="5Ds craving relief"] button').first().click();
 
     await pageB.reload();
     await expect(pageB.getByText("This is User A's private note")).not.toBeVisible();
