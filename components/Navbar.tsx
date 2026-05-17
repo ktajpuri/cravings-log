@@ -1,8 +1,6 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import PushNotificationToggle from "@/components/PushNotificationToggle";
-
 interface NavbarProps {
   userName?: string | null;
   userImage?: string | null;
@@ -26,7 +24,6 @@ export default function Navbar({ userName, userImage }: NavbarProps) {
 
       {/* User actions */}
       <div className="flex items-center gap-2">
-        <PushNotificationToggle />
         {userImage && (
           <img
             src={userImage}

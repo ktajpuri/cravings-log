@@ -55,11 +55,10 @@ model User {
   image         String?
   createdAt     DateTime  @default(now())
 
-  accounts          Account[]
-  sessions          Session[]
-  cravings          Craving[]
-  userOptions       UserOption[]
-  pushSubscriptions PushSubscription[]
+  accounts    Account[]
+  sessions    Session[]
+  cravings    Craving[]
+  userOptions UserOption[]
 }
 
 model UserOption {
@@ -111,16 +110,3 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model PushSubscription {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  endpoint  String   @unique
-  p256dh    String
-  auth      String
-
-  createdAt DateTime @default(now())
-
-  @@index([userId])
-}
