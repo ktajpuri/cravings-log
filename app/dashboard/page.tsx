@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
@@ -36,6 +36,7 @@ export default function DashboardPage() {
   const [cravings, setCravings] = useState<Craving[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const formRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") router.push("/login");
@@ -79,7 +80,7 @@ export default function DashboardPage() {
         userImage={session?.user?.image}
       />
 
-      <main className="max-w-2xl mx-auto px-4 py-8 space-y-8">
+      <main className="max-w-2xl mx-auto px-4 py-8 pb-24 space-y-8">
         {/* Stats */}
         <section>
           <div className="flex items-center gap-2 mb-4">
@@ -103,7 +104,7 @@ export default function DashboardPage() {
         </section>
 
         {/* Log form */}
-        <section>
+        <section ref={formRef}>
           <CravingForm onSuccess={fetchData} />
         </section>
 
@@ -125,6 +126,17 @@ export default function DashboardPage() {
           <CravingList cravings={cravings} onDelete={handleDelete} loading={loading} />
         </section>
       </main>
+      {/* Floating log CTA */}
+      <button
+        onClick={() => formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+        aria-label="Log a craving"
+        className="fixed bottom-6 right-5 z-30 flex items-center gap-2 rounded-full bg-indigo-600 px-5 py-3.5 text-sm font-semibold text-white shadow-lg hover:bg-indigo-700 active:scale-95 transition-all"
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        Log craving
+      </button>
     </div>
   );
 }
