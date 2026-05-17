@@ -25,6 +25,9 @@ playwright-report/
 # Claude Code local settings
 .claude/settings.local.json
 
+# TypeScript build info
+tsconfig.tsbuildinfo
+
 # Misc
 .DS_Store
 *.pem
