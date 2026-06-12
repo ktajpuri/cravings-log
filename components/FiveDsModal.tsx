@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import TriviaGame from "@/components/fourds/TriviaGame";
+import CravingOutcomeAnimation from "@/components/CravingOutcomeAnimation";
 
 interface FiveDsModalProps {
   open: boolean;
@@ -210,6 +211,7 @@ export default function FiveDsModal({ open, onClose, cravingId, onMarkResisted }
   const [triviaComplete, setTriviaComplete] = useState(false);
   const [delayDone, setDelayDone] = useState(false);
   const [marking, setMarking] = useState(false);
+  const [outcomeAnim, setOutcomeAnim] = useState<"victory" | "gave-in" | null>(null);
   const firstFocusRef = useRef<HTMLButtonElement>(null);
 
   // Reset state when modal opens
@@ -218,6 +220,7 @@ export default function FiveDsModal({ open, onClose, cravingId, onMarkResisted }
       setStep(0);
       setTriviaComplete(false);
       setDelayDone(false);
+      setOutcomeAnim(null);
     }
   }, [open]);
 
@@ -234,7 +237,11 @@ export default function FiveDsModal({ open, onClose, cravingId, onMarkResisted }
   }, [onClose]);
 
   async function handleMarkResisted() {
-    if (!cravingId) { onMarkResisted(); onClose(); return; }
+    if (!cravingId) {
+      onMarkResisted();
+      setOutcomeAnim("victory");
+      return;
+    }
     setMarking(true);
     try {
       await fetch(`/api/cravings/${cravingId}`, {
@@ -243,10 +250,21 @@ export default function FiveDsModal({ open, onClose, cravingId, onMarkResisted }
         body: JSON.stringify({ resisted: true }),
       });
       onMarkResisted();
+      setOutcomeAnim("victory");
+    } catch {
+      onClose();
     } finally {
       setMarking(false);
-      onClose();
     }
+  }
+
+  function handleGaveIn() {
+    setOutcomeAnim("gave-in");
+  }
+
+  function handleAnimationDone() {
+    setOutcomeAnim(null);
+    onClose();
   }
 
   function advance() {
@@ -444,7 +462,7 @@ export default function FiveDsModal({ open, onClose, cravingId, onMarkResisted }
                   {marking ? "Saving…" : "Mark craving as resisted ✓"}
                 </button>
                 <button
-                  onClick={onClose}
+                  onClick={handleGaveIn}
                   className="w-full py-2 rounded-xl text-xs font-medium text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   Close without marking
@@ -454,6 +472,9 @@ export default function FiveDsModal({ open, onClose, cravingId, onMarkResisted }
           )}
         </div>
       </div>
+      {outcomeAnim && (
+        <CravingOutcomeAnimation type={outcomeAnim} onDone={handleAnimationDone} />
+      )}
     </>
   );
 }
